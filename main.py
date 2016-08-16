@@ -3,7 +3,10 @@ import random # Pseudo random number library
 import numpy
 import math
 
-featuresize = 20
+# guide showing types of interpolation http://paulbourke.net/miscellaneous/interpolation/
+
+# should be power of 2
+featuresize = 64
 
 # val should be in the range 0.0 - 1.0
 def lerp( lower, upper, val ):
@@ -48,15 +51,14 @@ def perlin(x,y):
 	ix1 = cosinterp(n0, n1, sx);
 
 	value = cosinterp(ix0, ix1, sy)
-	pval = int( 128 * ( value + 1.0 ) )
 	
-	return ( pval, pval, pval );
+	return value
 
 # Generate a random map
-gradient = numpy.empty( shape=(200,200,2) )
+gradient = numpy.empty( shape=(500,500,2) )
 
-for i in range(200):    # for every node:
-    for j in range(200):
+for i in range(500):    # for every node:
+    for j in range(500):
 		x = random.uniform(-1.0, 1.0)
 		y = random.uniform(-1.0, 1.0)
 		m = math.sqrt(x*x + y*y)
@@ -64,7 +66,7 @@ for i in range(200):    # for every node:
 		gradient[i,j,1] = y / m
 
 # Create a new image 255x255px and fill it with black pixels initially
-img = Image.new( 'RGB', (500, 500), "black")
+img = Image.new( 'RGB', (200, 200), "black")
 
 # Gets the pixelmap from the image
 pixels = img.load()
@@ -72,8 +74,18 @@ pixels = img.load()
 # Fill in pixels with a pretty colour
 for j in range(img.size[1]):
 	for i in range(img.size[0]):    # for every pixel:
-		pixels[i,j] = perlin( float(i)/featuresize, float(j)/featuresize )
+		val = 0.0
+		a = 1.0
+		k = featuresize
+		
+		while (k >= 1):
+			val += perlin( float(i)/k, float(j)/k ) * a
+			k /= 2
+			a /= 2
+
+		pval = int( 128 * ( val + 1.0 ) )
+
+		pixels[i,j] = ( pval, pval, pval )
 
 img.show()
-
 
