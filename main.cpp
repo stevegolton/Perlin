@@ -77,7 +77,8 @@ int main( void )
 	int k;
 
 	// Seed the random number generator
-	srand( time( NULL ) );
+	//srand( time( NULL ) );
+	srand( 0 );
 
 	for (iX = 0; iX < HEIGHT+1; iX++)
 	{
