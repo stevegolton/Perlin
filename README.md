@@ -1,1 +1,1 @@
-Example project generating perlin noise in python.
+Making perlin noise in C++. Display with CImg.
